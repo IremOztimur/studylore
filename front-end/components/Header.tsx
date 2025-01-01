@@ -11,7 +11,7 @@ export default function Header() {
         A comprehensive guide to the fundamentals of neural networks and their applications
       </p>
       <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-        Source: LearnBetter Framework | Last Updated: June 2023
+        Source: Study Lore | Last Updated: June 2023
       </p>
     </header>
   )

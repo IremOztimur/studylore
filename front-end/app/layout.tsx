@@ -13,7 +13,7 @@ const openSans = Open_Sans({
 })
 
 export const metadata = {
-  title: 'LearnBetter Framework',
+  title: 'studylore',
   description: 'Transform tutorials into study-friendly guides',
 }
 
