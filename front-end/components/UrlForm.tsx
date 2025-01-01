@@ -48,7 +48,7 @@ export default function UrlForm() {
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Enter tutorial URL"
           required
-          className="flex-grow px-4 py-2 focus:outline-none"
+          className="flex-grow px-4 py-2 focus:outline-none text-gray-700"
         />
         <button
           type="submit"
