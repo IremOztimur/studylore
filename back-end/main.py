@@ -90,6 +90,7 @@ async def process_url(request: UrlRequest):
         """
         
         formatted_html = query_llama_model(prompt)
+
         return ProcessedContent(markdownContent=formatted_html)
     
     except Exception as e:
