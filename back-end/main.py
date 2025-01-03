@@ -6,10 +6,17 @@ from typing import List
 import os
 import requests
 import dotenv
+import groq
 
 dotenv.load_dotenv()
 
 app = FastAPI(debug=True)
+
+groq_api_key = os.getenv('GROQ_API_KEY')
+if not groq_api_key:
+    raise Exception("GROQ_API_KEY not configured")
+
+client = groq.Groq(api_key=groq_api_key)
 
 origins = [
     "http://localhost:3000",
@@ -26,10 +33,25 @@ class UrlRequest(BaseModel):
     url: str
 
 class ProcessedContent(BaseModel):
-    main_content: str
+    markdownContent: str
     # quick_notes: List[str]
     # quiz_questions: List[dict]
     
+def query_llama_model(prompt: str) -> str:
+    """
+    Query the Llama model via QROQ API with a given prompt.
+    """
+
+
+    response = client.chat.completions.create(
+        model="llama-3.1-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=3000,
+        temperature=0.7
+    )
+    
+    return response.choices[0].message.content
+
 
 def summarize_url(url_to_summarize):
     """
@@ -51,8 +73,24 @@ def summarize_url(url_to_summarize):
 @app.post("/process-url", response_model=ProcessedContent)
 async def process_url(request: UrlRequest):
     try:
-        content = summarize_url(request.url)
-        return ProcessedContent(main_content=content)
+        raw_content = summarize_url(request.url)
+        prompt = f"""
+        You are a content formatting assistant. Convert the following raw text into clean, well-structured HTML for a tutorial page. Use:
+        - `<h1>` for the main title.
+        - `<h2>` for subtitles.
+        - `<p>` for paragraphs.
+        - `<a>` for links.
+        - `<img>` for images (if URLs are present).
+        Ensure the HTML is semantic and visually appealing.
+
+        Raw text:
+        {raw_content}
+
+        Output:
+        """
+        
+        formatted_html = query_llama_model(prompt)
+        return ProcessedContent(markdownContent=formatted_html)
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
