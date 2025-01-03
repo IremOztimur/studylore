@@ -14,23 +14,22 @@ export default function UrlForm() {
 
     try {
       // Placeholder for API call
-      // const response = await fetch('/api/process-url', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ url }),
-      // })
+      const response = await fetch('http://localhost:8000/process-url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      })
 
-      // if (response.ok) {
-      //   // Navigate to the study page
-      //   router.push('/study')
-      // } else {
-      //   throw new Error('Failed to process URL')
-      // }
-      console.log('Attempting to navigate to /study...')
-      router.push('/study')
-      console.log('Navigation called')
+      if (response.ok) {
+        // Navigate to the study page
+        console.log('Response:', response.json())
+        router.push('/study')
+      } else {
+        throw new Error('Failed to process URL')
+      }
+      // router.push('/study')
     } catch (error) {
       console.error('Error processing URL:', error)
       // Handle error (e.g., show error message to user)
