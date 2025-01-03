@@ -46,7 +46,7 @@ def query_llama_model(prompt: str) -> str:
     response = client.chat.completions.create(
         model="llama-3.1-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=3000,
+        max_tokens=4000,
         temperature=0.7
     )
     
