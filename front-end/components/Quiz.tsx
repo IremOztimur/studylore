@@ -1,24 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const questions = [
-  {
-    question: "What is the primary inspiration for artificial neural networks?",
-    options: ["Human brain", "Computer circuits", "Plant networks", "Animal behavior"],
-    correctAnswer: 0
-  },
-  {
-    question: "Which of the following is NOT a key component of a neural network?",
-    options: ["Input layer", "Hidden layers", "Output layer", "Storage layer"],
-    correctAnswer: 3
-  }
-]
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: number;
+}
 
 export default function Quiz() {
+  const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [showResult, setShowResult] = useState(false)
+
+  useEffect(() => {
+    // Get quiz questions from localStorage
+    const storedData = localStorage.getItem("mainContent");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      if (parsedData.quiz_questions && parsedData.quiz_questions.length > 0) {
+        setQuestions(parsedData.quiz_questions);
+      }
+    }
+  }, []);
 
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index)
@@ -34,6 +39,11 @@ export default function Quiz() {
     setSelectedAnswer(null)
     setShowResult(false)
     setCurrentQuestion(prev => (prev + 1) % questions.length)
+  }
+
+  // Don't render the quiz section if there are no questions
+  if (questions.length === 0) {
+    return null;
   }
 
   return (
