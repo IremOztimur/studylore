@@ -26,7 +26,7 @@ export default function MainContent() {
   }
 
   return (
-    <main className="w-full lg:w-1/2 bg-white dark:bg-gray-800 p-6 prose dark:prose-invert max-w-none">
+    <main className="w-full lg:w-2/3 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm prose dark:prose-invert max-w-none">
       {/* Render the HTML content */}
       <div
         dangerouslySetInnerHTML={{ __html: content.markdownContent }}

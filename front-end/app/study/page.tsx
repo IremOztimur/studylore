@@ -1,5 +1,5 @@
 import Header from '../../components/Header'
-import Navigation from '../../components/Navigation'
+// import Navigation from '../../components/Navigation'
 import MainContent from '../../components/MainContent'
 import QuickNotes from '../../components/QuickNotes'
 import Quiz from '../../components/Quiz'
@@ -13,7 +13,7 @@ export default function StudyPage() {
         <DarkModeToggle />
         <Header />
         <div className="flex flex-col lg:flex-row gap-8 mt-8">
-          <Navigation />
+          {/* <Navigation /> */}
           <MainContent />
           <QuickNotes />
         </div>
