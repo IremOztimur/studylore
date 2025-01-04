@@ -13,10 +13,6 @@ export default function Footer() {
             <Home size={20} className="mr-1" />
             Home
           </a>
-          <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline flex items-center">
-            <Book size={20} className="mr-1" />
-            More Tutorials
-          </a>
         </nav>
       </div>
     </footer>
