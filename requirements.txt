@@ -3,5 +3,5 @@ fastapi
 uvicorn
 pydantic
 groq
-fpdf
+fpdf==1.7.2
 requests
