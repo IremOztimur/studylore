@@ -279,93 +279,51 @@ async def generate_pdf():
         """
 
         try:
-            #summary_content = query_llm_model(summary_prompt, model="mixtral-8x7b-32768")
             summary_content = query_llm_model(summary_prompt)
         except Exception as e:
             print(f"Summary generation error: {str(e)}")
             raise HTTPException(status_code=500, detail="Failed to generate summary")
 
-        # Clean the summary content more aggressively
+        # Clean the summary content
         summary_content = clean_text(summary_content)
-        # Additional cleaning: remove any non-ASCII characters
         summary_content = ''.join(char for char in summary_content if ord(char) < 128)
 
-        # Create PDF with A4 format and margins
-        pdf = PDF('P', 'mm', 'A4')
-        pdf.set_margins(20, 20, 20)
+        # Create PDF
+        pdf = PDF()
         pdf.add_page()
+        pdf.set_margins(20, 20, 20)
         
-        # Calculate effective width
-        page_width = 210  # A4 width in mm
-        margin = 20
-        effective_width = page_width - (2 * margin)
+        # Add content
+        pdf.set_font('Helvetica', '', 12)
         
-        pdf.set_font("Helvetica", size=12)
-        
-        lines = summary_content.split('\n')
-        in_bullet_list = False
-        
-        for line in lines:
+        # Process content line by line
+        for line in summary_content.split('\n'):
             line = line.strip()
             if not line:
                 pdf.ln(5)
-                in_bullet_list = False
                 continue
-            
-            # Handle headersw 
+                
             if line.startswith('#'):
-                in_bullet_list = False
-                pdf.set_font("Helvetica", 'B', 14)
-                pdf.multi_cell(effective_width, 8, line.replace('#', '').strip())
+                pdf.set_font('Helvetica', 'B', 14)
+                pdf.write(8, line.replace('#', '').strip() + '\n')
                 pdf.ln(5)
-                continue
-            
-            # Handle bullet points
-            if line.startswith('•') or line.startswith('-'):
-                pdf.set_font("Helvetica", '', 12)
-                
-                # Remove bullet character and trim
-                text = line.strip('•- ').strip()
-                
-                # Calculate positions
-                indent = 10  # indent for bullet points
-                bullet_width = 5
-                text_width = effective_width - indent - bullet_width
-                
-                # Move to indented position
-                pdf.set_x(margin + indent)
-                
-                # Add bullet
-                pdf.cell(bullet_width, 8, "-", 0, 0)
-                
-                # Add text with wrapping
-                pdf.multi_cell(text_width, 8, text)
-                
-                in_bullet_list = True
+            elif line.startswith('•') or line.startswith('-'):
+                pdf.set_font('Helvetica', '', 12)
+                pdf.set_x(30)
+                pdf.write(8, '- ' + line.strip('•- ').strip() + '\n')
             else:
-                # Regular paragraph
-                in_bullet_list = False
-                pdf.set_font("Helvetica", '', 12)
-                pdf.set_x(margin)  # Reset to left margin
-                pdf.multi_cell(effective_width, 8, line)
-            
-            # Add appropriate spacing
-            if not in_bullet_list:
-                pdf.ln(2)
+                pdf.set_font('Helvetica', '', 12)
+                pdf.set_x(20)
+                pdf.write(8, line + '\n')
 
-        # Get PDF bytes - fix the encoding issue
+        # Get PDF as bytes
         try:
-            pdf_bytes = pdf.output()
-            if isinstance(pdf_bytes, str):
-                pdf_bytes = pdf_bytes.encode('latin-1')
-            pdf_buffer = io.BytesIO(pdf_bytes)
+            pdf_content = pdf.output(dest='S').encode('latin-1')
+            pdf_buffer = io.BytesIO(pdf_content)
         except Exception as e:
             print(f"PDF encoding error: {str(e)}")
-            # Try alternative method
-            pdf_buffer = io.BytesIO()
-            pdf.output(pdf_buffer)
-            pdf_buffer.seek(0)
-        
+            raise HTTPException(status_code=500, detail="Failed to generate PDF")
+
         filename = f"studylore_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         
         return StreamingResponse(
