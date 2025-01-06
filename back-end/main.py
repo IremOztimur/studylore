@@ -2,17 +2,16 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 import os
 import requests
 import dotenv
 import groq
 import json
 from fpdf import FPDF
-from fpdf.enums import XPos, YPos
 import io
 from fastapi.responses import StreamingResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 dotenv.load_dotenv()
 
@@ -98,11 +97,53 @@ class ContentStore:
 
 content_store = ContentStore()
 
+class CacheEntry:
+    def __init__(self, formatted_html: str, quiz_questions: list, timestamp: datetime):
+        self.formatted_html = formatted_html
+        self.quiz_questions = quiz_questions
+        self.timestamp = timestamp
+
+class URLCache:
+    def __init__(self, expiry_hours: int = 24):
+        self.cache: Dict[str, CacheEntry] = {}
+        self.expiry_hours = expiry_hours
+
+    def get(self, url: str) -> Optional[CacheEntry]:
+        if url not in self.cache:
+            return None
+        
+        entry = self.cache[url]
+        # Check if cache has expired
+        if datetime.now() - entry.timestamp > timedelta(hours=self.expiry_hours):
+            del self.cache[url]
+            return None
+            
+        return entry
+
+    def set(self, url: str, formatted_html: str, quiz_questions: list):
+        self.cache[url] = CacheEntry(
+            formatted_html=formatted_html,
+            quiz_questions=quiz_questions,
+            timestamp=datetime.now()
+        )
+
+url_cache = URLCache()
+
 @app.post("/process-url", response_model=ProcessedContent)
 async def process_url(request: UrlRequest):
     try:
+        cached_content = url_cache.get(request.url)
+        if cached_content:
+            print(f"Cache hit for URL: {request.url}")
+            content_store.last_content = cached_content.formatted_html  # For PDF generation
+            content_store.formatted_html = cached_content.formatted_html
+            return ProcessedContent(
+                markdownContent=cached_content.formatted_html,
+                quiz_questions=cached_content.quiz_questions
+            )
+
+        print(f"Cache miss for URL: {request.url}")
         raw_content = summarize_url(request.url)
-        # Store the raw content
         content_store.last_content = raw_content
         
         truncated_content_markdown = truncate_text(raw_content, max_tokens=4000)
@@ -169,6 +210,13 @@ async def process_url(request: UrlRequest):
         except Exception as e:
             print(f"Quiz generation error: {str(e)}")
             quiz_questions = []
+
+        # Store in cache before returning
+        url_cache.set(
+            url=request.url,
+            formatted_html=formatted_html,
+            quiz_questions=quiz_questions
+        )
 
         return ProcessedContent(
             markdownContent=formatted_html,
