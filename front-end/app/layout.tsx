@@ -15,6 +15,11 @@ const openSans = Open_Sans({
 export const metadata = {
   title: 'studylore',
   description: 'Transform tutorials into study-friendly guides',
+  icons: {
+    icon: ['public/favicon.ico?v=4'],
+    shortcut: ['/apple-touch-icon.png'],
+    apple: ['/apple-touch-icon.png?v=4']
+  }
 }
 
 export default function RootLayout({
