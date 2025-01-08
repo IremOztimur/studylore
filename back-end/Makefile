@@ -5,7 +5,7 @@ clean:
 virtual:
 	@if [ ! -d "myenv" ]; then \
 		python3.11 -m venv myenv && \
-		source myenv/bin/activate && pip install -r requirements.txt && \
+		. myenv/bin/activate && pip install -r requirements.txt && \
 		echo "\033[92mCreated virtual environment.\033[0m"; \
 	else \
 		echo "\033[93mVirtual environment already exists.\033[0m"; \
