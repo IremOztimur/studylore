@@ -25,7 +25,9 @@ client = groq.Groq(api_key=groq_api_key)
 
 origins = [
     "http://localhost:3000",
+    "https://studylore.vercel.app"
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
