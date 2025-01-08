@@ -89,6 +89,10 @@ python main.py
 - `POST /process-url`: Processes a URL and returns formatted content with quiz questions
 - `GET /generate-pdf`: Generates and returns a PDF summary
 
+## Quick Demo
+https://github.com/user-attachments/assets/f3121166-3268-4af6-b052-b76391c22634
+
+
 ## Contributing
 
 1. Fork the repository
