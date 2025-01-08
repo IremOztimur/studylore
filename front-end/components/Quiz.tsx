@@ -47,7 +47,7 @@ export default function Quiz() {
   }
 
   return (
-    <section className="mt-8 bg-blue-50 dark:bg-blue-900 rounded-lg shadow-md p-6">
+    <section className="mt-8 bg-white/80 dark:bg-gray-900/90 rounded-xl shadow-lg p-6 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
       <h2 className="text-2xl font-bold mb-4">Quick Quiz</h2>
       <div className="mb-4">
         <p className="font-semibold mb-2">{questions[currentQuestion].question}</p>
@@ -56,10 +56,10 @@ export default function Quiz() {
             <li key={index}>
               <button
                 onClick={() => handleAnswer(index)}
-                className={`w-full text-left p-2 rounded ${
+                className={`w-full text-left p-3 rounded-lg transition-colors duration-200 ${
                   selectedAnswer === index
-                    ? 'bg-blue-200 dark:bg-blue-700'
-                    : 'bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
+                    ? 'bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700'
+                    : 'bg-white/90 dark:bg-gray-800/90 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-gray-700/90'
                 }`}
               >
                 {option}
@@ -85,13 +85,13 @@ export default function Quiz() {
         <button
           onClick={handleSubmit}
           disabled={selectedAnswer === null}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 shadow-sm"
         >
           Submit Answer
         </button>
         <button
           onClick={handleNext}
-          className="bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-2 px-4 rounded"
+          className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
         >
           Next Question
         </button>

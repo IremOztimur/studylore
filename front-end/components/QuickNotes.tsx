@@ -9,10 +9,10 @@ interface Note {
 }
 
 const COLORS = [
-  'bg-blue-100 dark:bg-blue-900',
-  'bg-green-100 dark:bg-green-900',
-  'bg-yellow-100 dark:bg-yellow-900',
-  'bg-pink-100 dark:bg-pink-900',
+  'bg-blue-100/80 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800',
+  'bg-emerald-100/80 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800',
+  'bg-amber-100/80 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800',
+  'bg-violet-100/80 dark:bg-violet-900/50 border border-violet-200 dark:border-violet-800',
 ];
 
 export default function QuickNotes() {
@@ -50,7 +50,7 @@ export default function QuickNotes() {
   };
 
   return (
-    <aside className="w-full lg:w-1/3 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+    <aside className="w-full lg:w-1/3 bg-white/80 dark:bg-gray-900/90 p-6 rounded-xl shadow-lg backdrop-blur-sm border border-slate-200 dark:border-slate-700">
       <h2 className="text-xl font-semibold mb-4">Your Notes</h2>
       
       {/* Note input form */}
@@ -61,11 +61,11 @@ export default function QuickNotes() {
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
             placeholder="Add a new note..."
-            className="flex-1 p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="flex-1 p-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white/90 dark:bg-gray-800/90 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 shadow-sm"
           >
             Add
           </button>

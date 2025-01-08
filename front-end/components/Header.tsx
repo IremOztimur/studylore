@@ -1,62 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-interface HeaderData {
-  title: string;
-  urlSource: string;
-}
 
 export default function Header() {
-  const [headerData, setHeaderData] = useState<HeaderData | null>(null);
-
-  useEffect(() => {
-    const storedData = localStorage.getItem("mainContent");
-    if (storedData) {
-      const parser = new DOMParser();
-      const parsedHTML = parser.parseFromString(
-        JSON.parse(storedData).markdownContent,
-        "text/html"
-      );
-
-      // Extract the first <h1> as the title
-      const title = parsedHTML.querySelector("h1")?.textContent || "Fallback Title";
-
-      // Extract the first <a> as the source link
-      const urlSource = parsedHTML.querySelector("a")?.getAttribute("href") || "";
-
-      setHeaderData({ title, urlSource });
-    }
-  }, []);
-
-  if (!headerData) {
-    return null; // Optionally display a loading indicator
-  }
-
   return (
-    <header className="text-center mb-8">
+    <header className="relative mb-8">
       <Link
         href="/"
-        className="text-blue-600 dark:text-blue-400 hover:underline mb-2 inline-block"
+        className="absolute left-0 top-1/2 -translate-y-1/2 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
       >
         ← Back to Home
       </Link>
-      <h1 className="text-4xl md:text-5xl font-bold mb-4">{headerData.title}</h1>
-      <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-        Source:{" "}
-        {headerData.urlSource ? (
-          <a
-            href={headerData.urlSource}
-            target="_blank"
-            className="text-blue-500 underline"
-          >
-            {headerData.urlSource}
-          </a>
-        ) : (
-          "No source available"
-        )}
-      </p>
+
+      <div className="text-center">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+          <span className="inline-block bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-200 dark:to-white bg-clip-text text-transparent">
+            Study
+          </span>
+          <span className="inline-block ml-2 text-blue-600 dark:text-blue-400">
+            lore
+          </span>
+        </h1>
+        
+        <p className="mt-3 text-lg text-slate-600 dark:text-slate-400 font-medium">
+          Focus. Learn. Master.
+        </p>
+      </div>
     </header>
   );
 }
