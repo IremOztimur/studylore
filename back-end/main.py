@@ -57,11 +57,11 @@ def query_llm_model(prompt: str, model: str = "llama-3.1-70b-versatile") -> str:
 
 
 
-def summarize_url(url_to_summarize):
+def scrape_url(url_to_scrape):
     """
-    Summarize content from a given URL using Jina AI's API
+    Scrape content from a given URL using Jina AI's API
     """
-    jina_url = f"https://r.jina.ai/{url_to_summarize}"
+    jina_url = f"https://r.jina.ai/{url_to_scrape}"
     
     headers = {
         "Authorization": f"Bearer {os.getenv('JINA_API_KEY')}"
@@ -143,26 +143,32 @@ async def process_url(request: UrlRequest):
             )
 
         print(f"Cache miss for URL: {request.url}")
-        raw_content = summarize_url(request.url)
+        raw_content = scrape_url(request.url)
         content_store.last_content = raw_content
         
         truncated_content_markdown = truncate_text(raw_content, max_tokens=4000)
         truncated_content_quiz = truncate_text(raw_content, max_tokens=2000)
-
+        
         markdown_prompt = f"""
-        You are a content formatting assistant. Convert the following raw text into clean, well-structured HTML for a tutorial page. Use:
+        You are a content formatting assistant. Convert the following raw text into clean, well-structured HTML for a tutorial page. 
+
+        **Instructions**:
+        - Extract only the tutorial-related content while ignoring irrelevant elements such as login prompts, navigation bars, or advertisements.
+        - Use semantic HTML tags:
         - `<h1>` for the main title.
         - `<h2>` for subtitles.
         - `<p>` for paragraphs.
-        - `<a>` for links.
-        - `<img>` for images (if URLs are present).
+        - `<a>` for links (retain meaningful labels and URLs).
+        - `<img>` for images (if relevant to the tutorial content).
+        
         Ensure the HTML is semantic and visually appealing.
 
-        Raw text:
+        **Raw text**:
         {truncated_content_markdown}
 
-        Output:
+        **Output**:
         """
+
         
         try:
             formatted_html = query_llm_model(markdown_prompt)
