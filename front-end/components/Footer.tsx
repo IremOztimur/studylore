@@ -9,7 +9,7 @@ export default function Footer() {
     try {
       setIsDownloading(true);
       
-      const response = await fetch('http://localhost:8000/generate-pdf', {
+      const response = await fetch('https://studylore.onrender.com/generate-pdf', {
         method: 'GET',
       });
       
