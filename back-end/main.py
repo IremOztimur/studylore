@@ -43,7 +43,7 @@ class ProcessedContent(BaseModel):
     markdownContent: str
     quiz_questions: List[dict] = []
     
-def query_llm_model(prompt: str, model: str = "llama-3.1-70b-versatile") -> str:
+def query_llm_model(prompt: str, model: str = "llama-3.3-70b-versatile") -> str:
     """
     Query the Llama model via QROQ API with a given prompt.
     """
